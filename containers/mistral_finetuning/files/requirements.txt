@@ -1,0 +1,19 @@
+# core Hugging Face + training
+transformers==4.56.2
+accelerate==1.10.1
+peft==0.10.0
+safetensors==0.6.2
+tokenizers==0.22.1
+
+# torch (keep the version that matches your GPU / CUDA runtime)
+torch==2.5.1+cu121
+bitsandbytes==0.43.3
+
+# data / utils
+pandas
+scikit-learn==1.3.2
+tqdm
+sentencepiece
+protobuf
+boto3
+beautifulsoup4

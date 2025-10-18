@@ -1,0 +1,13 @@
+# Datasets and exports
+*.csv
+*.xlsx
+*.json
+*.parquet
+*.zip
+*.pickle
+*.pkl
+*.json.gz
+*.json
+*.txt
+.env
+.env.*
