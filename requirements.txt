@@ -1,0 +1,27 @@
+# Core ML/DL frameworks
+torch==2.1.0
+transformers==4.37.2
+peft==0.10.0
+sentencepiece
+safetensors
+
+# AWS integration
+boto3
+sagemaker
+awscli
+
+# Data processing
+pandas
+numpy
+pyarrow
+
+# NLP utilities
+beautifulsoup4
+tqdm
+
+# Configuration
+python-dotenv
+
+# Jupyter (for notebooks)
+jupyter
+ipykernel

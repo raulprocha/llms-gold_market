@@ -1,51 +1,31 @@
-from sagemaker.pytorch import PyTorchProcessor
-from sagemaker.processing import ProcessingInput, ProcessingOutput
-from sagemaker import Session
-from sagemaker.network import NetworkConfig
-import boto3, uuid
+"""
+Legacy script - Use containers/rewrite_headline/run_job.py instead.
+This file is kept for backward compatibility.
+"""
 
-session = boto3.Session(region_name="us-east-1")
-sagemaker_session = Session(boto_session=session)
-role = "arn:aws:iam::378441332365:role/service-role/AmazonSageMaker-ExecutionRole-20250613T151598"
+import os
+import sys
 
-bucket = 'financial-llm-project'
-job_name = f"llm-pipeline-{uuid.uuid4().hex[:8]}"
+# Redirect to new implementation
+sys.path.append(os.path.join(os.path.dirname(__file__), '../../../'))
 
-image_uri = '378441332365.dkr.ecr.us-east-1.amazonaws.com/llm-rewriter:v1'
+print("⚠️  This script is deprecated. Use: python containers/rewrite_headline/run_job.py")
+print("Redirecting to new implementation...\n")
 
-processor = PyTorchProcessor(
-    #https://github.com/aws/deep-learning-containers/blob/master/available_images.md#huggingface-training-containers
-    image_uri=image_uri,
-    role=role,
-    instance_count=1,
-    instance_type='ml.g5.2xlarge', # for tests use ml.t3.medium, for production ml.g4dn.xlarge or ml.g5.2xlarge
-    volume_size_in_gb=50,
-    base_job_name=job_name,
-    sagemaker_session=sagemaker_session,
-    framework_version="1.13",
-    env={'NUM_ROWS': 'ALL', 'TRANSFORMERS_CACHE': '/opt/ml/processing/cache', 'SM_MODEL_DIR': '1'},
-    network_config=NetworkConfig(enable_network_isolation=False)
-)
+# For now, show migration message
+print("Please create run_job.py following the pattern in containers/sentiment_analysis/run_job.py")
+print("Or use the legacy implementation with environment variables.")
 
-processor.run(
-    code = "process.py",  
-    source_dir = "./code",      
-    inputs=[
-        ProcessingInput(
-            source=f's3://{bucket}/llm_pipeline/input/',
-            destination='/opt/ml/processing/input/'
-        )
-    ],
-    outputs=[
-        ProcessingOutput(
-            source='/opt/ml/processing/output/',
-            destination=f's3://{bucket}/llm_pipeline/output/'
-        )
-    ],
-    wait=True,
-    logs=True,
-    job_name=job_name
-)
+from dotenv import load_dotenv
+load_dotenv()
 
-print("Job finalizado com sucesso!")
+# Use environment variables instead of hardcoded values
+AWS_REGION = os.getenv("AWS_REGION", "us-east-1")
+AWS_BUCKET = os.getenv("AWS_BUCKET")
+AWS_SAGEMAKER_ROLE = os.getenv("AWS_SAGEMAKER_ROLE")
+AWS_ECR_IMAGE = os.getenv("AWS_ECR_IMAGE")
 
+if not all([AWS_BUCKET, AWS_SAGEMAKER_ROLE, AWS_ECR_IMAGE]):
+    raise ValueError("Missing required environment variables. Check your .env file.")
+
+print(f"✅ Configuration loaded from environment")
