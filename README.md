@@ -30,20 +30,42 @@ News API → Headline Rewriting → Sentiment Analysis → Feature Engineering �
 
 ```
 .
-├── src/
-│   ├── config/                    # Configuration management
-│   ├── data/                      # Data collection and processing
-│   ├── models/                    # Model training and inference
-│   └── utils/                     # Shared utilities
-├── containers/
-│   ├── base/                      # Shared Docker image
-│   ├── sentiment_analysis/        # FinBERT pipeline
-│   ├── headline_rewriter/         # Mistral headline generation
-│   └── model_training/            # Fine-tuning pipeline
-├── notebooks/                     # Exploratory analysis
-├── sql/                          # Athena queries
-├── requirements.txt
-└── .env.example
+├── README.md                    # Project overview
+├── LICENSE                      # MIT License
+├── requirements.txt             # Python dependencies
+├── Makefile                     # Build automation
+├── deploy.sh                    # Deployment script
+├── .env.example                 # Environment template
+│
+├── docs/                        # Documentation
+│   ├── ARCHITECTURE.md          # System design
+│   ├── SETUP.md                 # Installation guide
+│   ├── EXAMPLES.md              # Usage examples
+│   ├── SECURITY.md              # Security practices
+│   └── SCALABILITY.md           # Scaling strategies
+│
+├── sql/                         # Athena queries
+│   ├── feature_engineering/     # Data processing queries
+│   ├── sentiment_analysis/      # Sentiment pipeline queries
+│   └── headline_rewriter/       # Headline processing queries
+│
+├── src/                         # Shared code
+│   ├── config/                  # Configuration management
+│   └── utils/                   # Utility functions
+│
+├── pipelines/                   # ML pipelines
+│   ├── sentiment_analysis/      # FinBERT pipeline
+│   ├── headline_rewriter/       # Mistral headline generation
+│   ├── model_training/          # Fine-tuning pipeline
+│   └── inference/               # Prediction pipeline
+│
+├── docker/                      # Container definitions
+│   └── Dockerfile               # Base image
+│
+└── notebooks/                   # Exploratory analysis
+    ├── 01_data_collection.ipynb
+    ├── 02_feature_engineering.ipynb
+    └── 03_model_evaluation.ipynb
 ```
 
 ## Quick Start
@@ -78,27 +100,24 @@ HF_API_TOKEN=your_huggingface_token
 ### Build and Deploy
 
 ```bash
-# Build base Docker image
-cd containers/base
-docker build -t gold-ml-base:latest .
+# Build Docker image
+make build
 
-# Push to ECR
-aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ACCOUNT.dkr.ecr.us-east-1.amazonaws.com
-docker tag gold-ml-base:latest ACCOUNT.dkr.ecr.us-east-1.amazonaws.com/gold-ml-base:latest
-docker push ACCOUNT.dkr.ecr.us-east-1.amazonaws.com/gold-ml-base:latest
+# Deploy to ECR
+make deploy
 ```
 
 ### Run Pipelines
 
 ```bash
 # Sentiment analysis
-python containers/sentiment_analysis/run_job.py
-
-# Headline rewriting
-python containers/headline_rewriter/run_job.py
+python pipelines/sentiment_analysis/run.py
 
 # Model training
-python containers/model_training/run_training.py
+python pipelines/model_training/run.py
+
+# Inference
+python pipelines/inference/run.py
 ```
 
 ## Performance Metrics
@@ -147,26 +166,20 @@ Typical AWS costs for production workload:
 - **Robust Evaluation**: Stratified temporal splits, early stopping
 - **Production Ready**: Containerized, versioned, monitored
 
+## Documentation
+
+- [Architecture](docs/ARCHITECTURE.md) - System design and data flow
+- [Setup Guide](docs/SETUP.md) - Detailed installation instructions
+- [Examples](docs/EXAMPLES.md) - Usage examples and code samples
+- [Security](docs/SECURITY.md) - Security best practices
+- [Scalability](docs/SCALABILITY.md) - Scaling strategies
+
 ## Use Cases
 
 1. **Algorithmic Trading**: Generate trading signals from news
 2. **Risk Management**: Anticipate volatility from events
 3. **Market Research**: Analyze news impact patterns
 4. **Portfolio Optimization**: Adjust gold exposure based on sentiment
-
-## Limitations
-
-- Predictions are probabilistic, not deterministic
-- Performance depends on news quality and timeliness
-- Market conditions may change model effectiveness
-- Requires continuous retraining for drift adaptation
-
-## Future Enhancements
-
-- Real-time streaming inference
-- Multi-asset support (silver, platinum)
-- Ensemble with technical indicators
-- Explainability dashboard
 
 ## License
 
@@ -180,4 +193,4 @@ Email: raulrocha.rpr@gmail.com
 
 ---
 
-*This project demonstrates production-grade ML engineering for financial applications using modern LLM techniques and cloud infrastructure.*
+*Production-grade ML engineering for financial applications using modern LLM techniques and cloud infrastructure.*

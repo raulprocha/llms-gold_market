@@ -23,8 +23,9 @@ IMAGE_NAME=$(echo $AWS_ECR_IMAGE | cut -d'/' -f2 | cut -d':' -f1)
 IMAGE_TAG=$(echo $AWS_ECR_IMAGE | cut -d':' -f2)
 
 echo "🔧 Building Docker image..."
-cd containers/base
+cd docker
 docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .
+cd ..
 
 echo "🔐 Logging into ECR..."
 aws ecr get-login-password --region ${AWS_REGION} | \
