@@ -42,7 +42,7 @@ def load_model_tokenizer(cfg, cache_dir):
     try:
         mdl.enable_input_require_grads()
     except Exception:
-        pass  # nem todo modelo expõe isso
+        pass  # not all models expose this method
 
     # 3. Aplica LoRA
     lora = LoraConfig(

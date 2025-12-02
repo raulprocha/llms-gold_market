@@ -16,13 +16,13 @@ is_sage_maker = "SM_MODEL_DIR" in os.environ
 if is_sage_maker:
     #Look for paths
     for root, dirs, files in os.walk('/opt/ml/processing'):
-        print(f"Pasta: {root}")
+        print(f"Directory: {root}")
         for file in files:
             print(f"-> {file}")
     input_path = '/opt/ml/processing/input/generated_headline-to_finbert.csv'
     output_path = '/opt/ml/processing/output/output_finbert.csv'
     cache_dir = "/opt/ml/processing/cache"
-    print("Running in Sagemaker")
+    print("Running in SageMaker")
 
 else:
     input_path = 'input/generated_headline-to_finbert.csv'
@@ -35,9 +35,9 @@ model_name = 'yiyanghkust/finbert-tone'
 
 if __name__ == "__main__":
     tokenizer = BertTokenizer.from_pretrained(model_name, use_fast=False, cache_dir = cache_dir)
-    print("Tokenizer carregado")
+    print("Tokenizer loaded")
     model = BertForSequenceClassification.from_pretrained(model_name, cache_dir=cache_dir, torch_dtype=torch.float16).to(device)
-    print("Modelo carregado")
+    print("Model loaded")
     nlp = pipeline("text-classification", model=model_name, tokenizer = tokenizer)
 
     # Main input dataframe
@@ -69,7 +69,7 @@ if __name__ == "__main__":
         try:
             result = sentiment_analysis(row, model, tokenizer, device, nlp)
         except Exception as e:
-            print(f"Erro na linha {row.name}: {e}")
+            print(f"Error at row {row.name}: {e}")
             result = pd.Series({
             "id": row.get("id", ""),
             "symbol": row.get("symbol", ""),
@@ -84,4 +84,4 @@ if __name__ == "__main__":
         torch.cuda.empty_cache()
         gc.collect()
     
-    tqdm.write("Output gravado")
+    tqdm.write("Output saved")

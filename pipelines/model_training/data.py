@@ -7,7 +7,7 @@ from datasets import Dataset
 def load_dataset(csv_path):
     df = pd.read_csv(csv_path)
     df= df.head(100)
-    # constrói colunas prompt/target_json
+    # Build prompt and target_json columns
     df["prompt"] = df.apply(build_prompt, axis=1)
     df["target_json"] = df.apply(build_target_json, axis=1)
 

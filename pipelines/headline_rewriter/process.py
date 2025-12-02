@@ -30,7 +30,7 @@ is_sage_maker = "SM_MODEL_DIR" in os.environ
 if is_sage_maker:
     # Look for paths
     for root, dirs, files in os.walk('/opt/ml/processing'):
-        print(f"Pasta: {root}")
+        print(f"Directory: {root}")
         for file in files:
             print(f"-> {file}")
     input_path = '/opt/ml/processing/input/headline_news.csv'
